@@ -1,0 +1,3 @@
+# Automatic Certificate Renewal With LetsEncrypt
+
+I wrote [this script](auto_cert_renewal.bat) some time ago (before I migrated all my projects to *GitHub*). The purpose of the script is to automatically renew a *WebCTRL* SSL certificate every 80 days using *LetsEncrypt* as the free certificate authority. Refer to [instructions.txt](instructions.txt) for more details. The script and documentation is unpolished, which is why I've just thrown the files into this repository. I may come back at a later date to clean everything properly.

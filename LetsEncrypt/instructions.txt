@@ -1,0 +1,65 @@
+
+WebCTRL Certificate Renewal Instructions
+Author - Cameron Vogt
+Date - 11/03/2021
+
+
+Note - If you run the batch file "auto_cert_renewal.bat" anywhere on your computer, it will give you on-screen instructions.
+
+1. Verify your server satisfies the prerequisites.
+  Your server is accessible from any device connected to the internet (i.e. does not require additional VPN software).
+  Your server's IP address is registered to a domain name (e.g. www.somename.net).
+    You can contact your internet service provider or try a free service like https://www.noip.com/.
+    Raw IP addresses are not permitted (e.g. 12.345.67.890).
+2. Place "auto_cert_renewal.bat" in the WebCTRL keystore directory.
+  e.g. C:\WebCTRL8.0\webserver\keystores
+3. Install Certbot.
+  https://dl.eff.org/certbot-beta-installer-win32.exe
+  Search for LetsEncrypt or Certbot on the internet if the previous link is broken.
+4. Stop the WebCTRL Service.
+5. Run "auto_cert_renewal.bat" and follow the on-screen instructions.
+  Certbot will ask you to enter an email the first time you run the script.
+  If you want more information on what various parameters mean, look up "keystore distinguished name" on the internet.
+    Note the script forces the "Common Name" and "DNS Name" to be identical, which is a bit unusual; however this follows the format given by SiteBuilder.
+    You only need to enter these parameters the first time you run the script.
+    If you need to change them at a later date, you can edit the generated configuration file, and then re-run the script.
+      e.g. C:\WebCTRL8.0\webserver\keystores\config.txt
+  If you get an error along the lines of "Some challenges have failed", then the DNS name is probably setup incorrectly.
+    The server must have a public IP address for this to work (i.e. accessible from anywhere in the world without requiring additional software like a VPN).
+    What happening under the hood:
+      Certbot sends the suggested DNS name to LetsEncrypt.
+      Certbot spins up a temporary webserver on your computer.
+      LetsEncrypt attempts to connect to the spun up webserver by going to the suggested DNS name.
+      If LetsEncrypt successfully connects to the webserver and receives the expected result, then it gives you a certificate valid for 90 days.
+      Hence, anything that prevents LetsEncrypt from connecting to your DNS name (e.g. VPN) will cause the script to fail.
+    LetsEncrypt enforces some rate limits (https://letsencrypt.org/docs/rate-limits/) for acquiring certificates.
+      The limit your most likely to encounter with this script is a "Failed Validation limit of 5 failures per account, per hostname, per hour."
+6. Start the WebCTRL service when the script is finished.
+  This script will export a certificate "WebCTRL.cer" from the keystore "certkeys" when finished.
+    When you open this certificate, it should be valid on your computer.
+    If the certificate is not valid, then some error occurred.
+    To save time, you could check the validity of this certificate before restarting the WebCTRL service.
+7. Plan to run the script every time your certificate expires.
+  There is an option to schedule script execution every 80 days.
+    WARNING - If you schedule the script, then the WebCTRL service will be automatically restarted whenever the script is executed.
+
+Possible Issues
+  The keystore password field can accept many special characters, but please avoid using special characters in any other field.
+  If the Certbot software changes, then this script might not function properly.
+    I used Certbot version 1.20.0 while testing this script.
+  If the WebCTRL software changes, then this script might not function properly.
+    I've only tested the script on WebCTRL 8.0, but I believe it will work on other versions.
+    The script edits WebCTRL configuration files using regular expressions, so any changes to the format of these files could render the script useless.
+  If your server is on an ancient version of Windows, you're PowerShell installation may be outdated.
+    To determine your PowerShell version, open PowerShell and type the command: $PSVersionTable
+    I've tested the script on Windows 10, which has PowerShell version 5.1.19041.1237.
+
+Other Information
+  If the TLS protocol is updated, then the script should be updated to reflect these changes. The following phrases in the script will be affected:
+    TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256
+    TLSv1.3
+    TLSv1_3
+  If you ever forget the keystore password, it is stored plain-text in a WebCTRL configuration file.
+    e.g. C:\WebCTRL8.0\webserver\conf\server.xml
+  If you want to use RSA 4096bit (increased security) instead of 2048bit, you can edit the batch file to replace "2048" with "4096" (use find-replace utility).
+    Note - this is untested.
