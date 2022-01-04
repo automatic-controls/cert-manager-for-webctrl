@@ -1,6 +1,6 @@
 # WebCTRL Certificate Manager
 
-[This script](cert_manager.bat) helps to manage SSL certificates for *WebCTRL*. The script relies upon the *keytool* utility packaged with *WebCTRL*, so external software is not required. Since the script is a batch file, it can only be used on *Windows* operating systems. This script has been tested on *WebCTRL7.0* and *WebCTRL8.0*.
+[This script](cert_manager.bat) helps to manage SSL certificates for *WebCTRL*. The script relies upon the *keytool* utility packaged with *WebCTRL*, so external software is not required. Since the script is a batch file, it can only be used on *Windows* operating systems. This script has been designed to function with *WebCTRL8.0*. Most commands should work on other *WebCTRL* versions, but there may be exceptions.
 
 # Setup
 
