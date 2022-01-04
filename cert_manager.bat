@@ -1,6 +1,8 @@
 
-:: Contributors:
-::   Cameron Vogt (@cvogt729)
+:: WebCTRL Certificate Manager Script
+:: Version: 1.0.0
+:: Repository: https://github.com/automatic-controls/webctrl-cert-manager
+:: Contributors: Cameron Vogt (@cvogt729)
 
 :: BSD 3-Clause License
 :: 
@@ -43,7 +45,6 @@ call :normalizePath WebCTRL "%~dp0..\.."
 set "keytool=%WebCTRL%\bin\java\jre\bin\keytool.exe"
 set "settings=%WebCTRL%\resources\properties\settings.properties"
 set "config=%WebCTRL%\webserver\conf\server.xml"
-set aliasExists=0
 
 %= Locate keytool utility =%
 if not exist "%keytool%" (
@@ -127,7 +128,7 @@ set "commands=5"
   echo HELP              Display this message.
   echo GENERATE          Generate a new 2048bit RSA key-pair.
   echo REQUEST           Create a certificate signing request.
-  echo IMPORT [file]     Import the full certificate reply chain.
+  echo IMPORT [file]     Import the certificate reply chain.
   echo EXPORT            Export the primary certificate for inspection.
   echo.
   echo All other commands are passed to keytool.
@@ -181,10 +182,7 @@ exit /b
     echo Unexpected parameter.
     exit /b
   )
-  if %aliasExists% EQU 1 (
-    "%keytool%" -keystore "%keystore%" -storepass "!password!" -delete -alias webctrl >nul 2>nul
-    if !ERRORLEVEL! EQU 0 set aliasExists=0
-  )
+  "%keytool%" -keystore "%keystore%" -storepass "!password!" -delete -alias webctrl >nul 2>nul
   setlocal
     echo.
     echo Example: www.somename.net
@@ -219,9 +217,14 @@ exit /b
     set /p "SAN=>"
     echo.
     if "!SAN!" EQU "" set "SAN=dns:!CN!"
-    "%keytool%" -keystore "%keystore%" -storepass "!password!" -genkeypair -alias webctrl -keyalg RSA -sigalg SHA256withRSA -keysize 2048 -keypass "!password!" -validity 3650 -ext "san=!SAN!" -dname "CN=!CN!, OU=!OU!, O=!O!, L=!L!, ST=!ST!, C=!C!" >nul
+    set "CN=!CN:,=\,!"
+    set "OU=!OU:,=\,!"
+    set "O=!O:,=\,!"
+    set "L=!L:,=\,!"
+    set "ST=!ST:,=\,!"
+    set "C=!C:,=\,!"
+    "%keytool%" -keystore "%keystore%" -storepass "!password!" -genkeypair -alias webctrl -keyalg RSA -sigalg SHA256withRSA -keysize 2048 -keypass "!password!" -validity 3650 -ext "san=!SAN!" -dname "CN=!CN!, OU=!OU!, O=!O!, L=!L!, ST=!ST!, C=!C!"
     if %ERRORLEVEL% EQU 0 (
-      set aliasExists=1
       echo Key-pair generated successfully.
     ) else (
       echo An error has occurred.
@@ -258,11 +261,8 @@ exit /b
 
 %= Delete extraneous aliases =%
 :clear
-  set aliasExists=0
   for /f "tokens=2,* delims= " %%i in ('""%keytool%" -keystore "%keystore%" -storepass "!password!" -list -rfc ^| findstr /C:"Alias name: ""') do (
-    if "%%j" EQU "webctrl" (
-      set aliasExists=1
-    ) else (
+    if "%%j" NEQ "webctrl" (
       "%keytool%" -keystore "%keystore%" -storepass "!password!" -delete -alias "%%j" >nul 2>nul
     )
   )
