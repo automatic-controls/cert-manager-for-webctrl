@@ -1,7 +1,7 @@
 
-:: WebCTRL Certificate Manager Script
+:: Certificate Manager Script for WebCTRL
 :: Version: 1.0.0
-:: Repository: https://github.com/automatic-controls/webctrl-cert-manager
+:: Repository: https://github.com/automatic-controls/cert-manager-for-webctrl
 :: Contributors: Cameron Vogt (@cvogt729)
 
 :: BSD 3-Clause License
@@ -35,7 +35,7 @@
 :: OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @echo off
-title WebCTRL Certificate Manager
+title Certificate Manager for WebCTRL
 setlocal EnableDelayedExpansion
 
 cd "%~dp0"
@@ -87,7 +87,7 @@ set "commands=5"
 :main
   cls
   echo.
-  echo WebCTRL Certificate Manager
+  echo Certificate Manager for WebCTRL
   echo.
   echo Type 'help' for a list of commands.
   echo.
@@ -122,7 +122,7 @@ set "commands=5"
   )
   echo.
   echo Online documentation can be found at
-  echo https://github.com/automatic-controls/webctrl-cert-manager/blob/main/README.md
+  echo https://github.com/automatic-controls/cert-manager-for-webctrl/blob/main/README.md
   echo.
   echo CLS               Clear the terminal.
   echo HELP              Display this message.
