@@ -1,5 +1,5 @@
 @echo off
-title WebCTRL Certificate Renewal
+title Certificate Renewal for WebCTRL
 setlocal DisableDelayedExpansion
 
 %= Check whether this batch file has been executed with parameter "auto" =%
@@ -141,7 +141,7 @@ setlocal EnableDelayedExpansion
 endlocal
 
 %= Determine whether there exists a task which periodically executes this script =%
-schtasks /Query /TN "WebCTRL Certificate Renewal" >nul 2>nul
+schtasks /Query /TN "Certificate Renewal for WebCTRL" >nul 2>nul
 if %ERRORLEVEL%==0 (
   set /a taskExists=1
 ) else (
@@ -270,7 +270,7 @@ echo.
 setlocal EnableDelayedExpansion
   if %auto%==0 (
     if %taskExists%==1 (
-      echo There exists a scheduled task "WebCTRL Certificate Renewal" that executes this script every 80 days.
+      echo There exists a scheduled task "Certificate Renewal for WebCTRL" that executes this script every 80 days.
       echo So you shouldn't have to run this script manually.
       echo.
       echo Would you like to delete this task? ^(YES/NO^)
@@ -280,7 +280,7 @@ setlocal EnableDelayedExpansion
       )
       if /i "!ret!" EQU "YES" (
         %= Delete the scheduled task =%
-        schtasks /Delete /F /TN "WebCTRL Certificate Renewal"
+        schtasks /Delete /F /TN "Certificate Renewal for WebCTRL"
         echo.
       ) else (
         goto :gracefulExit
@@ -308,7 +308,7 @@ goto :gracefulExit
   echo e.g. 15:00 - the task will run at 3:00PM every 80 days.
   set /p "ret=>"
   %= Create a scheduled certificate renewal task =%
-  schtasks /Create /RU SYSTEM /SC DAILY /MO 80 /TN "WebCTRL Certificate Renewal" /TR "'%~dpnx0' auto" /ST !ret! /NP /F /RL HIGHEST
+  schtasks /Create /RU SYSTEM /SC DAILY /MO 80 /TN "Certificate Renewal for WebCTRL" /TR "'%~dpnx0' auto" /ST !ret! /NP /F /RL HIGHEST
   if "%ERRORLEVEL%" NEQ "0" (
     echo An error was encountered. Would you like to try again? ^(YES/NO^)
     set /p "ret=>"
