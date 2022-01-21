@@ -1,5 +1,5 @@
 
-WebCTRL Certificate Renewal Instructions
+Certificate Renewal Script Instructions for WebCTRL 
 Author - Cameron Vogt
 Date - 11/03/2021
 
